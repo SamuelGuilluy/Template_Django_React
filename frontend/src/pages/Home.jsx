@@ -2,41 +2,15 @@ import {useState, useEffect} from "react";
 import api from "../api";
 import Note from "../components/Note";
 import "../styles/Home.css";
+import Navbar from "../components/Navbar";
 
 function Home() {
     const [notes, setNotes] = useState([]);
     const [content, setContent] = useState("");
     const [title, setTitle] = useState("");
+    
 
-    useEffect(() => {
-        getNotes();
-    } , []);
-
-    const getNotes = () => {
-        api
-            .get("/api/notes/")
-            .then((res) => res.data)
-            .then((data) => {setNotes(data); console.log(data)})
-            .catch((error) => allert(error));
-
-    }
-
-    const deleteNote = (id) => {
-        api
-            .delete(`/api/notes/delete/${id}/`)
-            .then((res) => {
-            if (res.status === 204) {
-                alert("Note deleted successfully");
-            }
-            else {
-                alert("Error deleting note");
-            }
-            getNotes();
-        })
-            .catch((error) => alert(error));
-
-        
-    }
+    
 
     const createNote = (e) =>{
         e.preventDefault()
@@ -47,7 +21,6 @@ function Home() {
             else {
                 alert("Error creating note");
             }
-            getNotes();
         })
             .catch((error) => alert(error));
         
@@ -56,11 +29,7 @@ function Home() {
 
     return (
         <div>
-            <div> <h2>Notes</h2>
-                {notes.map((note) => (
-                    <Note key={note.id} note={note} onDelete={deleteNote} />
-                ))}
-            </div>
+            <Navbar />
 
             <div>
                 <h2> Create a Note</h2>
