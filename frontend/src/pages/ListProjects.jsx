@@ -2,28 +2,27 @@ import "../styles/Home.css";
 import Navbar from "../components/Navbar";
 import TableComponents from "../components/TableComponents";
 import api from "../api";
-import Note from "../components/Note";
 import {useState, useEffect} from "react";
 
-function VisualiseElements() {
-    const [notes, setNotes] = useState([]);
+function ListProjects() {
+    const [projects, setProjects] = useState([]);
 
     useEffect(() => {
-        getNotes();
+        getProjects();
     } , []);
 
 
-    const getNotes = () => {
+    const getProjects = () => {
         api
-            .get("/api/notes/")
+            .get("/api/projects/")
             .then((res) => res.data)
-            .then((data) => {setNotes(data); console.log(data)})
+            .then((data) => {setProjects(data); console.log(data)})
             .catch((error) => allert(error));
     }
 
-    const deleteNote = (id) => {
+    const deleteProject = (id) => {
         api
-            .delete(`/api/notes/delete/${id}/`)
+            .delete(`/api/projects/delete/${id}/`)
             .then((res) => {
             if (res.status === 204) {
                 alert("Note deleted successfully");
@@ -45,12 +44,12 @@ function VisualiseElements() {
             </div> */}
 
             <div >
-                <h1>Visualise Notes</h1>
-                <TableComponents data={notes} onDelete={deleteNote}/>
+                <h1>Liste des projets</h1>
+                <TableComponents data={projects} onDelete={deleteProject}/>
             </div>
         </div>
             
     );
 }
 
-export default VisualiseElements;
+export default ListProjects;

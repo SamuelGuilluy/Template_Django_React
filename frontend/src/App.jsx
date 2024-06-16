@@ -5,8 +5,8 @@ import Home from './pages/Home'
 import Register from './pages/Register'
 import NotFound from './pages/NotFound'
 import ProtectedRoute from './components/ProtectedRoute'
-import VisualiseElements from './pages/VisualiseElements'
-import NoteDetails from './pages/NoteDetail'
+import ListProjects from './pages/ListProjects'
+import ProjectView from './pages/ProjectView'
 
 function Logout() {
   localStorage.clear()
@@ -30,15 +30,15 @@ function App() {
               <Home />
             </ProtectedRoute>
           } />
-          <Route path="/visualise" element={
+          <Route path="/list_projects" element={
             <ProtectedRoute>
-              <VisualiseElements />
+              <ListProjects />
             </ProtectedRoute>
           } />
           {/* get the note date from the path */}
-          <Route path="/note/:id" element={
+          <Route path="/project/:id" element={
             <ProtectedRoute>
-              <NoteDetails />
+              <ProjectView />
             </ProtectedRoute>
           } />
             

@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from .models import Note
+from .models import Project
 from rest_framework import serializers
 
 class UserSerializer(serializers.ModelSerializer):
@@ -14,10 +14,9 @@ class UserSerializer(serializers.ModelSerializer):
     
 
 
-class NoteSerializer(serializers.ModelSerializer):
+class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Note
-        fields = ['id', 'title', 'content', 'created_at', 'author']
+        model = Project
+        fields = ['id', 'title', 'client', "description", "context", "estimated_cost" ,'created_at', 'author']
         extra_kwargs = {'author': {'read_only': True}}
     
-
