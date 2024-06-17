@@ -3,6 +3,7 @@ import api from "../api";
 import "../styles/Home.css";
 import Navbar from "../components/Navbar";
 
+
 function Home() {
     const [title, setTitle] = useState("");
     const [client, setClient] = useState("");
@@ -65,6 +66,7 @@ function Home() {
                     <input type="submit" value="Créer" />
                 </form>
             </div>
+            
         </div>
     );
 }

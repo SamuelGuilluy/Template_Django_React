@@ -7,6 +7,7 @@ import NotFound from './pages/NotFound'
 import ProtectedRoute from './components/ProtectedRoute'
 import ListProjects from './pages/ListProjects'
 import ProjectView from './pages/ProjectView'
+import ChatbotPage from './pages/ChatbotPage'
 
 function Logout() {
   localStorage.clear()
@@ -39,6 +40,11 @@ function App() {
           <Route path="/project/:id" element={
             <ProtectedRoute>
               <ProjectView />
+            </ProtectedRoute>
+          } />
+          <Route path="/chatbot" element={
+            <ProtectedRoute>
+              <ChatbotPage />
             </ProtectedRoute>
           } />
             
