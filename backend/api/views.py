@@ -5,6 +5,22 @@ from .serializers import UserSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import Project
 from .serializers import ProjectSerializer
+from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.views import APIView
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import openai
+import json
+
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+
 
 # Create your views here.
 class CreateUserView(generics.CreateAPIView):
@@ -48,3 +64,39 @@ class GetProjectView(generics.RetrieveAPIView):
     def get_queryset(self):
         user = self.request.user
         return Project.objects.filter(author=user, id=self.kwargs['pk'])
+
+import logging
+from django.utils.decorators import method_decorator
+
+logger = logging.getLogger(__name__)
+
+@method_decorator(csrf_exempt, name='dispatch')
+class ChatbotAnswer(generics.RetrieveAPIView):
+    def post(self, request, *args, **kwargs):
+        user_message = request.data.get('message')
+        
+        if not user_message:
+            return Response({'error': 'No message provided'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            logger.info(f"Received user message: {user_message}")
+            completion = openai.chat.completions.create(
+                model="gpt-4",
+                messages=[
+                    {
+                        "role": "system",
+                        "content": "You are a helpful assistant.",
+                    },
+                    {   
+
+                        "role": "user",
+                        "content": user_message,
+                    },
+                ],
+            )
+            response_text = completion.choices[0].message.content
+            logger.info(f"OpenAI response: {response_text}")
+            return Response({'message': response_text}, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(f"Error while processing the request: {str(e)}")
+            return Response({'error': 'Internal server error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

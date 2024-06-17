@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import api from "../api";
 import '../styles/Chatbot.css';
 
 const Chatbot = () => {
@@ -13,11 +14,15 @@ const Chatbot = () => {
 
     setInput('');
 
-    // Simuler une réponse après un délai
-    setTimeout(() => {
-      const botMessage = { sender: 'bot', text: 'Ceci est une réponse simulée.' };
-      setMessages(prevMessages => [...prevMessages, botMessage]);
-    }, 1000);
+    try {
+      const response = await api.post('/api/chatbot/', { message: input });
+      const botMessage = { sender: 'bot', text: response.data.message };
+      setMessages((prevMessages) => [...prevMessages, botMessage]);
+    } catch (error) {
+      console.error('Erreur lors de l\'appel à l\'API:', error);
+      const errorMessage = { sender: 'bot', text: 'Erreur lors de l\'appel à l\'API.' };
+      setMessages((prevMessages) => [...prevMessages, errorMessage]);
+    }
   };
 
   const handleInputChange = (e) => {
