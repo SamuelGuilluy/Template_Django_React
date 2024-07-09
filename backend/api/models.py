@@ -15,3 +15,17 @@ class Project(models.Model):
     def __str__(self):
         return self.title
 
+
+class Message(models.Model):
+    content = models.TextField()
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    vote = models.IntegerField()
+    conversation = models.ForeignKey('Conversation', on_delete=models.CASCADE, related_name='messages')
+
+
+class Conversation(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='conversations')
+    def __str__(self):
+        return self.message

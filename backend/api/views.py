@@ -1,20 +1,14 @@
-from django.shortcuts import render
 from django.contrib.auth.models import User
-from rest_framework import generics
-from .serializers import UserSerializer
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from .models import Project
-from .serializers import ProjectSerializer
-from rest_framework import generics
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.views import APIView
-
-from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-import openai
-import json
 
+from .models import Project, Conversation, Message
+from .serializers import ProjectSerializer, UserSerializer, ConversationSerializer, MessageSerializer
+
+from rest_framework import generics, status
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated, AllowAny
+
+import openai
 from dotenv import load_dotenv
 import os
 
@@ -100,3 +94,35 @@ class ChatbotAnswer(generics.RetrieveAPIView):
         except Exception as e:
             logger.error(f"Error while processing the request: {str(e)}")
             return Response({'error': 'Internal server error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+
+class ConversationView(generics.ListCreateAPIView):
+    serializer_class = ConversationSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Conversation.objects.filter(author=user)
+    
+    def perform_create(self, serializer):
+        if serializer.is_valid():
+            serializer.save(author=self.request.user)
+        else:
+            print(serializer.errors)
+
+
+
+class MessageView(generics.ListCreateAPIView):
+    serializer_class = MessageSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Message.objects.filter(author=user)
+    
+    def perform_create(self, serializer):
+        if serializer.is_valid():
+            serializer.save(author=self.request.user)
+        else:
+            print(serializer.errors)
